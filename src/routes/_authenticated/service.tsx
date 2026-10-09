@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Lightbulb } from "lucide-react";
 import { toast } from "sonner";
+import { humanisePart } from "@/lib/format";
 import { AppScreen, Section } from "@/components/layout/AppScreen";
 import { PageHeader } from "@/components/navigation/PageHeader";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/common/States";
@@ -124,8 +125,8 @@ function ServiceScreen() {
               </SelectTrigger>
               <SelectContent>
                 {SERVICE_TYPES.map((type) => (
-                  <SelectItem key={type} value={type} className="capitalize">
-                    {type.replace(/_/g, " ")}
+                  <SelectItem key={type} value={type}>
+                    {humanisePart(type)}
                   </SelectItem>
                 ))}
               </SelectContent>

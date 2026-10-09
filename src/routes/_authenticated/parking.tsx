@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MapPin, Navigation, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { MapPreview } from "@/components/common/MapPreview";
 import { AppScreen, Section } from "@/components/layout/AppScreen";
 import { PageHeader } from "@/components/navigation/PageHeader";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/common/States";
@@ -107,12 +108,7 @@ function ParkingScreen() {
             {mapImage ? (
               <img src={mapImage} alt="Map of your current location" className="block w-full" />
             ) : (
-              <div className="flex items-center gap-3 border-b border-border bg-muted px-4 py-6">
-                <MapPin className="size-5 text-primary" aria-hidden />
-                <p className="text-xs text-muted-foreground">
-                  Map preview needs a Google Maps key. Coordinates and directions still work.
-                </p>
-              </div>
+              <MapPreview coords={coords} />
             )}
             <div className="px-4 py-3">
               <p className="text-sm font-medium tabular-nums">

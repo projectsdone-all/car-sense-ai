@@ -66,7 +66,7 @@ export function DamageImageViewer({
                   className="absolute left-0 top-0 -translate-y-full whitespace-nowrap rounded-t-[3px] px-1.5 py-0.5 text-[10px] font-semibold"
                   style={{ backgroundColor: "var(--primary)", color: "var(--primary-foreground)" }}
                 >
-                  {damageLabel(detection.class)} {Math.round(detection.confidence * 100)}%
+                  {damageLabel(detection.class)}{detection.confidence < 1 ? ` ${Math.round(detection.confidence * 100)}%` : ''}
                 </span>
               </span>
             );

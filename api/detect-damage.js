@@ -3,18 +3,19 @@
 // POST { image: base64, mimeType } → { is_vehicle, summary, detections:[{class,severity,part,confidence,box_2d}] }
 const PARTS = [
   "front_bumper", "rear_bumper", "front_door", "rear_door", "bonnet", "boot", "fender", "quarter_panel",
-  "roof", "windshield", "rear_windshield", "side_window", "headlight", "tail_light", "side_mirror", "wheel",
+  "grille", "roof", "windshield", "rear_windshield", "side_window", "headlight", "tail_light", "fog_light", "side_mirror", "wheel",
 ];
-const PROMPT = `You are an expert motor-insurance damage assessor in India.
-Look at this photo and find every VISIBLE damage on the vehicle (car, SUV, bike or auto).
+const PROMPT = `You are an expert motor-insurance damage assessor in India. Inspect this photo carefully, panel by panel.
+List EVERY separate visible damage on the vehicle (car, SUV, bike or auto). One entry per damaged part — a crash usually damages several parts (for example: broken headlight + dented bumper + cracked grille + bent bonnet), so do not stop at the first one.
+Look especially for: broken or cracked headlights and tail lights (shattered lens, missing pieces, exposed bulb), smashed or cracked bumpers, dented or bent panels, crumpled bonnet, damaged grille, broken side mirrors, cracked windshield or windows, scratches and scuffs, missing or hanging parts, flat or damaged wheels.
 For each damage give:
-- "class": one of "scratch", "dent", "crack", "broken_part"
-- "severity": "minor" (cosmetic, polish/touch-up), "moderate" (panel repair/repaint), or "severe" (replacement or structural)
+- "class": "scratch" (paint scratch/scuff), "dent" (deformed or bent metal/plastic), "crack" (cracked glass or plastic), or "broken_part" (shattered, smashed, missing, hanging or detached part)
+- "severity": "minor" (cosmetic, polish/touch-up), "moderate" (panel repair/repaint), or "severe" (part must be replaced, or structural)
 - "part": one of ${PARTS.join(", ")}
-- "confidence": 0 to 1, how sure you are
-- "box_2d": [ymin, xmin, ymax, xmax] tightly around the damage, normalised to 0-1000
-Do not report dirt, reflections, shadows, stickers or water drops as damage. If there is no visible damage, return an empty list.
-Return JSON only: {"is_vehicle": boolean, "summary": "one or two plain sentences for the owner", "detections": [...]}`;
+- "confidence": 0 to 1
+- "box_2d": [ymin, xmin, ymax, xmax] tightly around that damage only, normalised to 0-1000
+Do not report dirt, reflections, shadows, stickers, water drops or normal panel gaps as damage. If there is no visible damage, return an empty list.
+Return JSON only: {"is_vehicle": boolean, "summary": "one or two plain sentences for the owner naming what is damaged", "detections": [...]}`;
 
 export const config = { api: { bodyParser: { sizeLimit: "4mb" } } };
 

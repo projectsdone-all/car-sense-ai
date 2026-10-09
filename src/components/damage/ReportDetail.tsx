@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Share2, Trash2, Wrench } from "lucide-react";
+import { PencilRuler, Share2, Trash2, Wrench } from "lucide-react";
+import { DamageEditor } from "@/components/damage/DamageEditor";
+import { updateDetections } from "@/lib/reports";
 import { toast } from "sonner";
 import { db } from "@/lib/db";
 import { AppScreen, Section } from "@/components/layout/AppScreen";
@@ -36,6 +38,15 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
   const queryClient = useQueryClient();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
+  useEffect(() => {
+    if (!imageUrl) return;
+    const img = new Image();
+    img.onload = () => setNatural({ w: img.naturalWidth, h: img.naturalHeight });
+    img.src = imageUrl;
+  }, [imageUrl]);
 
   const report = useQuery({ queryKey: ["report", reportId], queryFn: () => fetchReport(reportId) });
   const costs = useQuery({ queryKey: ["repair-costs"], queryFn: fetchRepairCosts });
@@ -130,7 +141,7 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
       data ? `Date: ${formatDate(data.created_at)}` : "",
       ...detections.map(
         (detection) =>
-          `• ${damageLabel(detection.class)} on ${detection.part.replace(/_/g, " ")} — ${severityLabel(detection.severity)} (${Math.round(detection.confidence * 100)}% confidence)`,
+          `• ${damageLabel(detection.class)} on ${detection.part.replace(/_/g, " ")} — ${severityLabel(detection.severity)} ${detection.confidence < 1 ? `(${Math.round(detection.confidence * 100)}% confidence)` : ''}`,
       ),
       `Authorized service center: ${formatRange(estimate.showroom.min, estimate.showroom.max)}`,
       `Local mechanic: ${formatRange(estimate.local_mechanic.min, estimate.local_mechanic.max)}`,
@@ -145,7 +156,27 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
     else if (outcome === "unsupported") toast.error("Sharing is not available on this device.");
   }
 
+  async function saveEdits(next: DamageDetection[]) {
+    if (!data) return;
+    setSavingEdit(true);
+    try {
+      await updateDetections(reportId, next, data.source);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["report", reportId] }),
+        queryClient.invalidateQueries({ queryKey: ["reports"] }),
+      ]);
+      setEditing(false);
+      setActiveIndex(null);
+      toast.success("Damage list updated.");
+    } catch (caught) {
+      toast.error(caught instanceof Error ? caught.message : "Changes could not be saved.");
+    } finally {
+      setSavingEdit(false);
+    }
+  }
+
   async function handleDelete() {
+    if (!window.confirm("Delete this report? This cannot be undone.")) return;
     const { error } = await db.from("damage_reports").delete().eq("id", reportId);
     if (error) {
       toast.error("Report could not be deleted.");
@@ -165,7 +196,18 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
       />
 
       <div className="px-4 pt-4">
-        {imageUrl ? (
+        {imageUrl && editing ? (
+          <DamageEditor
+            src={imageUrl}
+            width={data.image_width || natural?.w || 1}
+            height={data.image_height || natural?.h || 1}
+            initial={detections}
+            saving={savingEdit}
+            saveLabel={savingEdit ? "Saving…" : "Save changes"}
+            onSave={saveEdits}
+            onCancel={() => setEditing(false)}
+          />
+        ) : imageUrl ? (
           <DamageImageViewer
             src={imageUrl}
             detections={detections}
@@ -176,17 +218,26 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
         ) : (
           <div className="h-48 animate-pulse rounded-xl border border-border bg-muted" />
         )}
-        {data.source === "mock" ? (
+        {!editing ? (
           <p className="mt-2 text-xs text-muted-foreground">
-            Demo inference result — simulated detections, not a live model prediction.
-          </p>
-        ) : data.source === "gemini" ? (
-          <p className="mt-2 text-xs text-muted-foreground">
-            Assessed by Gemini vision AI. Confirm with a mechanic before booking repairs.
+            {data.source === "gemini"
+              ? "Assessed by Gemini vision AI. Something missing or wrong? Tap Edit damage to correct it."
+              : data.source === "edited"
+                ? "AI result corrected by you."
+                : data.source === "manual"
+                  ? "Damage marked by you. Costs are calculated from the parts and severity you chose."
+                  : data.source === "api"
+                    ? "Detected by the YOLOv8 service."
+                    : "Demo inference result — simulated detections. Tap Edit damage to mark the real damage."}
           </p>
         ) : null}
-        {data.summary ? (
+        {data.summary && !editing ? (
           <p className="mt-3 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm">{data.summary}</p>
+        ) : null}
+        {imageUrl && !editing ? (
+          <Button variant="outline" className="mt-3 min-h-11 w-full" onClick={() => setEditing(true)}>
+            <PencilRuler className="size-4" aria-hidden /> Edit damage
+          </Button>
         ) : null}
       </div>
 
@@ -194,7 +245,7 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
         {detections.length === 0 ? (
           <EmptyState
             title="No visible damage detected."
-            description="Try a closer, well-lit photo of the affected panel."
+            description="If the photo shows damage, tap Edit damage above and draw a box around it."
           />
         ) : (
           <ul className="space-y-2">

@@ -9,8 +9,8 @@ import { Label } from "@/components/ui/label";
 
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(mode === "login" ? DEMO_EMAIL : "");
+  const [password, setPassword] = useState(mode === "login" ? DEMO_PASSWORD : "");
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -76,7 +76,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         </h1>
         <p className="mt-1.5 text-sm text-muted-foreground">
           {mode === "login"
-            ? "Continue where you left off with your vehicles and inspections."
+            ? "The demo account is filled in — just press Sign in, or use your own account."
             : "Add your vehicle and run your first damage inspection in under a minute."}
         </p>
 

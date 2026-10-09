@@ -1,7 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { db } from "@/lib/db";
 import { AuthForm } from "@/components/auth/AuthForm";
 
 export const Route = createFileRoute("/login")({
+  beforeLoad: async () => {
+    const { data } = await db.auth.getUser();
+    if (data.user) throw redirect({ to: "/" });
+  },
   head: () => ({
     meta: [
       { title: "Sign in — Car Sense AI" },

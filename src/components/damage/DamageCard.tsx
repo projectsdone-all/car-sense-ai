@@ -24,9 +24,11 @@ export function DamageCard({
         <p className="truncate text-xs text-muted-foreground">{humanisePart(detection.part)}</p>
       </div>
       <div className="flex shrink-0 items-center gap-2">
-        <span className="text-xs tabular-nums text-muted-foreground">
-          {Math.round(detection.confidence * 100)}%
-        </span>
+        {detection.confidence < 1 ? (
+          <span className="text-xs tabular-nums text-muted-foreground" title="AI confidence">
+            {Math.round(detection.confidence * 100)}%
+          </span>
+        ) : null}
         <SeverityBadge severity={detection.severity} />
       </div>
     </Wrapper>

@@ -25,6 +25,7 @@ import {
 } from "@/services/location/locationService";
 import { isSmsProviderConfigured, shareText } from "@/services/notification/notificationService";
 import { formatCoords } from "@/lib/format";
+import { MapPreview } from "@/components/common/MapPreview";
 import type { Coordinates } from "@/types";
 
 export const Route = createFileRoute("/_authenticated/sos")({
@@ -143,7 +144,9 @@ function SosScreen() {
       {coords ? (
         <>
           <Section title="Your location">
-            <div className="rounded-xl border border-border bg-surface px-4 py-3 shadow-card">
+            <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-card">
+              <MapPreview coords={coords} height={180} />
+              <div className="px-4 py-3">
               <p className="flex items-center gap-2 text-sm font-medium tabular-nums">
                 <MapPin className="size-4 text-primary" aria-hidden />
                 {formatCoords(coords.latitude, coords.longitude)}
@@ -161,6 +164,7 @@ function SosScreen() {
               >
                 Open in Maps
               </a>
+              </div>
             </div>
           </Section>
 
