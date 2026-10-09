@@ -1,0 +1,112 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Car Sense AI design system.
+ * Warm neutral paper background, charcoal type, single automotive rust accent.
+ * All colors are oklch tokens. Never hardcode colors in components.
+ */
+
+@theme inline {
+  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-minor: var(--minor);
+  --color-minor-foreground: var(--minor-foreground);
+  --color-moderate: var(--moderate);
+  --color-moderate-foreground: var(--moderate-foreground);
+  --color-severe: var(--severe);
+  --color-severe-foreground: var(--severe-foreground);
+  --shadow-card: 0 1px 2px oklch(0.2 0.02 60 / 0.06), 0 1px 3px oklch(0.2 0.02 60 / 0.04);
+  --shadow-raised: 0 2px 8px oklch(0.2 0.02 60 / 0.08);
+}
+
+:root {
+  --radius: 0.7rem;
+  --background: oklch(0.982 0.005 85);
+  --foreground: oklch(0.235 0.012 60);
+  --surface: oklch(1 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.235 0.012 60);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.235 0.012 60);
+  --primary: oklch(0.505 0.163 33);
+  --primary-foreground: oklch(0.985 0.005 85);
+  --secondary: oklch(0.955 0.007 85);
+  --secondary-foreground: oklch(0.3 0.012 60);
+  --muted: oklch(0.955 0.007 85);
+  --muted-foreground: oklch(0.505 0.012 65);
+  --accent: oklch(0.95 0.02 45);
+  --accent-foreground: oklch(0.38 0.11 33);
+  --destructive: oklch(0.5 0.19 25);
+  --destructive-foreground: oklch(0.985 0.005 85);
+  --border: oklch(0.902 0.008 80);
+  --input: oklch(0.888 0.008 80);
+  --ring: oklch(0.505 0.163 33);
+  --minor: oklch(0.94 0.04 150);
+  --minor-foreground: oklch(0.4 0.09 150);
+  --moderate: oklch(0.95 0.06 80);
+  --moderate-foreground: oklch(0.42 0.1 65);
+  --severe: oklch(0.94 0.045 25);
+  --severe-foreground: oklch(0.44 0.16 25);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.015em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+@utility app-shell {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 30rem;
+}
