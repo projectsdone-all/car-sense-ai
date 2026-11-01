@@ -107,7 +107,7 @@ function HomeScreen() {
 
   return (
     <AppScreen>
-      <header className="flex items-center justify-between px-4 pb-2 pt-5">
+      <header className="flex items-center justify-between px-4 pb-2 pt-5 lg:hidden">
         <div className="flex items-center gap-2.5">
           <span className="bg-brand flex size-10 items-center justify-center rounded-xl text-primary-foreground shadow-[var(--shadow-glow)]">
             <ScanLine className="size-5" aria-hidden />
@@ -126,12 +126,28 @@ function HomeScreen() {
         </Link>
       </header>
 
-      <div className="px-4 pt-4">
-        <p className="text-sm text-muted-foreground">{greeting()},</p>
-        <h1 className="mt-0.5 text-[1.9rem] font-bold capitalize leading-tight">
-          <span className="text-gradient">{firstName}</span>
-        </h1>
+      <div className="px-4 pt-4 lg:flex lg:items-end lg:justify-between lg:pt-10">
+        <div>
+          <p className="text-sm text-muted-foreground">{greeting()},</p>
+          <h1 className="mt-0.5 text-[1.9rem] font-bold leading-tight lg:text-4xl">
+            <span className="text-gradient capitalize">{firstName}</span>
+            <span className="hidden text-foreground lg:inline">, here's your car at a glance</span>
+          </h1>
+        </div>
+        <div className="hidden items-center gap-2 lg:flex">
+          <span className="glass rounded-xl px-3 py-2 text-sm text-muted-foreground">
+            {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}
+          </span>
+          <Button asChild className="min-h-10">
+            <Link to="/scan">
+              <ScanLine aria-hidden /> New scan
+            </Link>
+          </Button>
+        </div>
       </div>
+
+      <div className="lg:grid lg:grid-cols-12 lg:gap-2 lg:pt-3">
+      <div className="lg:col-span-7">
 
       {/* Hero scanner */}
       <div className="px-4 pt-5">
@@ -153,7 +169,7 @@ function HomeScreen() {
                 </span>
                 {mode.isLoading ? "Checking AI…" : aiOn ? "AI vision online" : "Manual marking mode"}
               </span>
-              <h2 className="mt-3 text-2xl font-bold leading-tight">
+              <h2 className="mt-3 text-2xl font-bold leading-tight lg:text-4xl">
                 Scan. Detect.
                 <br />
                 Estimate in seconds.
@@ -162,7 +178,7 @@ function HomeScreen() {
             <Cpu className="size-6 shrink-0 text-primary/70" aria-hidden />
           </div>
 
-          <CarScan className="-mx-2 mt-3" />
+          <CarScan className="-mx-2 mt-3 lg:mx-auto lg:mt-6 lg:max-w-xl" />
 
           <Button asChild className="mt-4 min-h-13 w-full text-base">
             <Link to="/scan">
@@ -174,8 +190,10 @@ function HomeScreen() {
         </div>
       </div>
 
+      </div>
+      <div className="lg:col-span-5">
       {/* Health + stats */}
-      <div className="px-4 pt-3">
+      <div className="px-4 pt-3 lg:pt-5">
         <Link
           to="/service"
           className="flex items-center gap-4 rounded-3xl border border-border bg-surface p-4 backdrop-blur-xl transition-colors hover:border-primary/40"
@@ -240,6 +258,11 @@ function HomeScreen() {
         </ul>
       </Section>
 
+      </div>
+      </div>
+
+      <div className="lg:grid lg:grid-cols-12 lg:gap-2">
+      <div className="lg:col-span-7">
       <Section
         title="Recent inspections"
         action={
@@ -291,6 +314,8 @@ function HomeScreen() {
         )}
       </Section>
 
+      </div>
+      <div className="lg:col-span-5">
       {tip ? (
         <Section title="Vehicle health tip">
           <div className="relative overflow-hidden rounded-2xl border border-[oklch(0.84_0.14_85/0.25)] bg-[linear-gradient(135deg,oklch(0.84_0.14_85/0.12),transparent_60%)] px-4 py-4">
@@ -342,6 +367,8 @@ function HomeScreen() {
           />
         )}
       </Section>
+      </div>
+      </div>
     </AppScreen>
   );
 }

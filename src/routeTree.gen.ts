@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedMechanicsRouteImport } from './routes/_authenticated/mechanics'
+import { Route as AuthenticatedMusicRouteImport } from './routes/_authenticated/music'
 import { Route as AuthenticatedParkingRouteImport } from './routes/_authenticated/parking'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedScanRouteImport } from './routes/_authenticated/scan'
@@ -46,6 +47,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
 const AuthenticatedMechanicsRoute = AuthenticatedMechanicsRouteImport.update({
   id: '/mechanics',
   path: '/mechanics',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMusicRoute = AuthenticatedMusicRouteImport.update({
+  id: '/music',
+  path: '/music',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedParkingRoute = AuthenticatedParkingRouteImport.update({
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/mechanics': typeof AuthenticatedMechanicsRoute
+  '/music': typeof AuthenticatedMusicRoute
   '/parking': typeof AuthenticatedParkingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/scan': typeof AuthenticatedScanRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/mechanics': typeof AuthenticatedMechanicsRoute
+  '/music': typeof AuthenticatedMusicRoute
   '/parking': typeof AuthenticatedParkingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/scan': typeof AuthenticatedScanRoute
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/_authenticated/mechanics': typeof AuthenticatedMechanicsRoute
+  '/_authenticated/music': typeof AuthenticatedMusicRoute
   '/_authenticated/parking': typeof AuthenticatedParkingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/scan': typeof AuthenticatedScanRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/mechanics'
+    | '/music'
     | '/parking'
     | '/profile'
     | '/scan'
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/mechanics'
+    | '/music'
     | '/parking'
     | '/profile'
     | '/scan'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/_authenticated/mechanics'
+    | '/_authenticated/music'
     | '/_authenticated/parking'
     | '/_authenticated/profile'
     | '/_authenticated/scan'
@@ -234,6 +246,13 @@ declare module '@tanstack/react-router' {
       path: '/mechanics'
       fullPath: '/mechanics'
       preLoaderRoute: typeof AuthenticatedMechanicsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/music': {
+      id: '/_authenticated/music'
+      path: '/music'
+      fullPath: '/music'
+      preLoaderRoute: typeof AuthenticatedMusicRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/parking': {
@@ -304,6 +323,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedMechanicsRoute: typeof AuthenticatedMechanicsRoute
+  AuthenticatedMusicRoute: typeof AuthenticatedMusicRoute
   AuthenticatedParkingRoute: typeof AuthenticatedParkingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedScanRoute: typeof AuthenticatedScanRoute
@@ -318,6 +338,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMechanicsRoute: AuthenticatedMechanicsRoute,
+  AuthenticatedMusicRoute: AuthenticatedMusicRoute,
   AuthenticatedParkingRoute: AuthenticatedParkingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedScanRoute: AuthenticatedScanRoute,

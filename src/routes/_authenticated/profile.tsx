@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Car, ChevronRight, LogOut, ScanLine, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
-import { AppScreen, Section } from "@/components/layout/AppScreen";
+import { AppScreen, Columns, Section } from "@/components/layout/AppScreen";
 import { PageHeader } from "@/components/navigation/PageHeader";
 import { Button } from "@/components/ui/button";
 import { SkeletonList } from "@/components/common/States";
@@ -59,6 +59,8 @@ function ProfileScreen() {
     <AppScreen>
       <PageHeader title="Profile" />
 
+      <Columns>
+      <div>
       <Section>
         {profile.isLoading ? (
           <SkeletonList rows={1} />
@@ -103,6 +105,8 @@ function ProfileScreen() {
         </ul>
       </Section>
 
+      </div>
+      <div>
       <Section title="Detection engine">
         <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl px-4 py-3 shadow-card">
           <div className="flex gap-3">
@@ -163,6 +167,8 @@ function ProfileScreen() {
           Sign out
         </Button>
       </Section>
+      </div>
+      </Columns>
     </AppScreen>
   );
 }

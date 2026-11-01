@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { Compass, History, Home, ScanLine, User } from "lucide-react";
+import { History, Home, Music2, ScanLine, User } from "lucide-react";
 
 const LEFT = [
   { to: "/", label: "Home", icon: Home },
-  { to: "/mechanics", label: "Explore", icon: Compass },
+  { to: "/history", label: "History", icon: History },
 ] as const;
 const RIGHT = [
-  { to: "/history", label: "History", icon: History },
+  { to: "/music", label: "Music", icon: Music2 },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 

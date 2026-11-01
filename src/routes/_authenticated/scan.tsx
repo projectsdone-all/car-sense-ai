@@ -133,10 +133,10 @@ function ScanScreen() {
         </p>
       ) : null}
 
-      <Section title="Vehicle">
-        <VehiclePicker vehicles={vehicles.data ?? []} loading={vehicles.isLoading} selectedId={vehicleId} onSelect={setVehicleId} />
-      </Section>
 
+
+      <div className="lg:grid lg:grid-cols-12 lg:items-start lg:gap-2">
+      <div className="lg:col-span-8">
       <Section title={review ? (review.source === "manual" ? "Mark the damage" : "Check what the AI found") : "Photo"}>
         <input ref={cameraInput} type="file" accept="image/*" capture="environment" className="sr-only" onChange={(event) => { void handlePicked(event.target.files?.[0]); event.target.value = ""; }} />
         <input ref={uploadInput} type="file" accept="image/*" className="sr-only" onChange={(event) => { void handlePicked(event.target.files?.[0]); event.target.value = ""; }} />
@@ -212,6 +212,28 @@ function ScanScreen() {
           </div>
         )}
       </Section>
+      </div>
+      <div className="lg:col-span-4 lg:sticky lg:top-6">
+      <Section title="Vehicle">
+        <VehiclePicker vehicles={vehicles.data ?? []} loading={vehicles.isLoading} selectedId={vehicleId} onSelect={setVehicleId} />
+      </Section>
+        <Section title="How it works" className="hidden lg:block">
+          <ol className="space-y-3">
+            {[
+              ["1", "Upload a clear photo of the damaged area."],
+              ["2", "AI marks each damaged part — or you draw the boxes."],
+              ["3", "Review type, part and severity, then save."],
+              ["4", "Get the repair estimate, PDF report and claim letter."],
+            ].map(([n, t]) => (
+              <li key={n} className="flex gap-3 rounded-2xl border border-border bg-surface p-3 text-sm text-muted-foreground backdrop-blur-xl">
+                <span className="font-display flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/12 text-sm font-bold text-primary">{n}</span>
+                {t}
+              </li>
+            ))}
+          </ol>
+        </Section>
+      </div>
+      </div>
 
       {error ? (
         <div className="px-4 pb-2">

@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MapPin, Navigation, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { MapPreview } from "@/components/common/MapPreview";
-import { AppScreen, Section } from "@/components/layout/AppScreen";
+import { AppScreen, Columns, Section } from "@/components/layout/AppScreen";
 import { PageHeader } from "@/components/navigation/PageHeader";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/common/States";
 import { Button } from "@/components/ui/button";
@@ -102,6 +102,8 @@ function ParkingScreen() {
     <AppScreen>
       <PageHeader title="Parking" description="Save and find your parked vehicle" />
 
+      <Columns>
+      <div>
       <Section title="Current location">
         {coords ? (
           <div className="overflow-hidden rounded-2xl border border-border bg-surface backdrop-blur-xl shadow-card">
@@ -160,6 +162,8 @@ function ParkingScreen() {
         </div>
       </Section>
 
+      </div>
+      <div>
       <Section title="Saved spots">
         {spots.isLoading ? (
           <SkeletonList rows={2} />
@@ -216,6 +220,8 @@ function ParkingScreen() {
           </ul>
         )}
       </Section>
+      </div>
+      </Columns>
     </AppScreen>
   );
 }

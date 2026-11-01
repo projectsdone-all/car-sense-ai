@@ -54,7 +54,7 @@ function HistoryScreen() {
             }
           />
         ) : (
-          <ul className="space-y-2">
+          <ul className="grid gap-2 lg:grid-cols-2 lg:gap-3 xl:grid-cols-3">
             {(reports.data ?? []).map((report) => (
               <li key={report.id}>
                 <Link

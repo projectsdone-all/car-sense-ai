@@ -224,7 +224,8 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
         backTo={backTo}
       />
 
-      <div className="px-4 pt-4">
+      <div className="lg:grid lg:grid-cols-12 lg:items-start lg:gap-2">
+      <div className="px-4 pt-4 lg:sticky lg:top-6 lg:col-span-7">
         {imageUrl && editing ? (
           <DamageEditor
             src={imageUrl}
@@ -288,6 +289,7 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
         ) : null}
       </div>
 
+      <div className="lg:col-span-5">
       <Section title="Detected damage">
         {detections.length === 0 ? (
           <EmptyState
@@ -345,6 +347,9 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
           </p>
         </div>
       </Section>
+
+      </div>
+      </div>
 
       <ClaimHelper
         open={claimOpen}

@@ -112,7 +112,7 @@ function SosScreen() {
   }
 
   return (
-    <AppScreen>
+    <AppScreen wide={false}>
       <PageHeader title="SOS Emergency" description="Roadside assistance" backTo="/" />
 
       <Section>

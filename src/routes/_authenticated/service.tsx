@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Lightbulb } from "lucide-react";
 import { toast } from "sonner";
 import { humanisePart } from "@/lib/format";
-import { AppScreen, Section } from "@/components/layout/AppScreen";
+import { AppScreen, Columns, Section } from "@/components/layout/AppScreen";
 import { PageHeader } from "@/components/navigation/PageHeader";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/common/States";
 import { Button } from "@/components/ui/button";
@@ -115,6 +115,8 @@ function ServiceScreen() {
     <AppScreen>
       <PageHeader title="Service" description="Reminders and health tips" backTo="/" />
 
+      <Columns>
+      <div>
       <Section title="Add reminder">
         <div className="space-y-3 rounded-2xl border border-border bg-surface backdrop-blur-xl p-4 shadow-card">
           <div className="space-y-1.5">
@@ -197,6 +199,8 @@ function ServiceScreen() {
         )}
       </Section>
 
+      </div>
+      <div>
       <Section title="Vehicle health tips">
         {tips.isLoading ? (
           <SkeletonList rows={2} />
@@ -215,6 +219,8 @@ function ServiceScreen() {
         )}
         {tip ? null : null}
       </Section>
+      </div>
+      </Columns>
     </AppScreen>
   );
 }

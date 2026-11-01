@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Car, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { AppScreen, Section } from "@/components/layout/AppScreen";
+import { AppScreen, Columns, Section } from "@/components/layout/AppScreen";
 import { PageHeader } from "@/components/navigation/PageHeader";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/common/States";
 import { Button } from "@/components/ui/button";
@@ -89,6 +89,8 @@ function VehiclesScreen() {
     <AppScreen>
       <PageHeader title="Vehicles" description="Your garage" backTo="/" />
 
+      <Columns>
+      <div>
       <Section title="Your vehicles">
         {vehicles.isLoading ? (
           <SkeletonList rows={2} />
@@ -130,6 +132,8 @@ function VehiclesScreen() {
         )}
       </Section>
 
+      </div>
+      <div>
       <Section title="Add a vehicle">
         <form
           className="space-y-3 rounded-2xl border border-border bg-surface backdrop-blur-xl p-4 shadow-card"
@@ -217,6 +221,8 @@ function VehiclesScreen() {
           </Button>
         </form>
       </Section>
+      </div>
+      </Columns>
     </AppScreen>
   );
 }

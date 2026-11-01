@@ -134,7 +134,7 @@ function MechanicsScreen() {
             description="Try a different service category."
           />
         ) : (
-          <ul className="space-y-3">
+          <ul className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
             {list.map(({ mechanic, distance }) => (
               <li key={mechanic.id}>
                 <MechanicCard

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { BrainCircuit, IndianRupee, Loader2, MapPinned, ScanLine, Sparkles } from "lucide-react";
 import { CarScan } from "@/components/common/CarScan";
-import { Showcase } from "@/components/layout/Showcase";
+import { QrCode } from "@/components/layout/QrCode";
 import { toast } from "sonner";
 import { db, DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/db";
 import { Button } from "@/components/ui/button";
@@ -59,10 +59,41 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   }
 
   return (
-    <div className="min-h-screen px-5 pb-12 pt-8">
-      <Showcase />
+    <div className="min-h-screen lg:grid lg:grid-cols-[1.1fr_1fr]">
+      <aside className="relative hidden overflow-hidden border-r border-border bg-[linear-gradient(160deg,oklch(0.22_0.05_235),oklch(0.13_0.02_258))] p-12 lg:flex lg:flex-col">
+        <div className="pointer-events-none absolute -left-24 -top-24 size-96 rounded-full bg-primary/20 blur-3xl" />
+        <div className="relative flex items-center gap-3">
+          <span className="bg-brand flex size-11 items-center justify-center rounded-xl text-primary-foreground shadow-[var(--shadow-glow)]">
+            <ScanLine className="size-5" aria-hidden />
+          </span>
+          <span className="font-display text-lg font-bold">Car Sense AI</span>
+        </div>
+        <div className="relative my-auto max-w-xl">
+          <h2 className="text-5xl font-bold leading-[1.05] xl:text-6xl">
+            See the damage.
+            <br />
+            <span className="text-gradient">Know the cost.</span>
+            <br />
+            Drive with confidence.
+          </h2>
+          <p className="mt-5 max-w-md text-muted-foreground">
+            Photograph your car, let AI mark every dent, scratch and crack, and get an instant repair estimate in rupees — plus a PDF report and a ready insurance claim.
+          </p>
+          <CarScan className="mt-8 max-w-lg" />
+        </div>
+        <div className="relative flex items-center gap-4">
+          <div className="rounded-xl bg-white p-2">
+            <QrCode className="size-20" />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            <span className="block font-semibold text-foreground">Try it on your phone</span>
+            Scan to open — installs like an app.
+          </p>
+        </div>
+      </aside>
+      <div className="px-5 pb-12 pt-8 lg:flex lg:items-center lg:justify-center lg:py-12">
       <div className="app-shell relative animate-rise">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 lg:hidden">
           <span className="bg-brand flex size-10 items-center justify-center rounded-xl text-primary-foreground shadow-[var(--shadow-glow)]">
             <ScanLine className="size-5" aria-hidden />
           </span>
@@ -72,7 +103,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           </span>
         </div>
 
-        <div className="hud-corners relative mt-6 overflow-hidden rounded-3xl border border-primary/25 bg-[linear-gradient(160deg,oklch(0.27_0.06_230/0.8),oklch(0.17_0.03_258/0.85))] px-4 pb-4 pt-6">
+        <div className="hud-corners relative mt-6 overflow-hidden rounded-3xl lg:hidden border border-primary/25 bg-[linear-gradient(160deg,oklch(0.27_0.06_230/0.8),oklch(0.17_0.03_258/0.85))] px-4 pb-4 pt-6">
           <div className="pointer-events-none absolute -left-10 -top-16 size-48 rounded-full bg-primary/25 blur-3xl" />
           <CarScan />
           <div className="relative mt-2 flex flex-wrap justify-center gap-1.5">
@@ -88,7 +119,8 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           </div>
         </div>
 
-        <h1 className="mt-8 text-[2rem] font-bold leading-[1.1]">
+        <h1 className="mt-8 hidden text-4xl font-bold lg:block">{mode === "login" ? "Welcome back" : "Create your account"}</h1>
+        <h1 className="mt-8 text-[2rem] font-bold leading-[1.1] lg:hidden">
           {mode === "login" ? (
             <>
               See the damage.
@@ -196,6 +228,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
             </>
           )}
         </p>
+      </div>
       </div>
     </div>
   );
