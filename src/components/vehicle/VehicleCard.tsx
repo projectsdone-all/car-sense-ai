@@ -41,7 +41,7 @@ export function VehicleCard({
         type="button"
         onClick={onSelect}
         aria-pressed={selected}
-        className={`flex w-full items-center gap-3 rounded-xl border bg-surface px-4 py-3 text-left shadow-card ${
+        className={`flex w-full items-center gap-3 rounded-2xl border bg-surface backdrop-blur-xl px-4 py-3 text-left shadow-card ${
           selected ? "border-primary" : "border-border"
         }`}
       >
@@ -51,7 +51,7 @@ export function VehicleCard({
   }
 
   return (
-    <div className="flex w-full items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 shadow-card">
+    <div className="flex w-full items-center gap-3 rounded-2xl border border-border bg-surface backdrop-blur-xl px-4 py-3 shadow-card">
       {content}
     </div>
   );

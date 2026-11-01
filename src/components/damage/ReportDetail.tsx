@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { PencilRuler, Share2, Trash2, Wrench } from "lucide-react";
+import { FileCheck2, FileDown, Loader2, PencilRuler, Share2, Trash2, Wrench } from "lucide-react";
+import { ClaimHelper } from "@/components/damage/ClaimHelper";
+import { downloadReportPdf } from "@/lib/pdf-report";
+import { SEVERITY_COLOR } from "@/components/damage/DamageImageViewer";
 import { DamageEditor } from "@/components/damage/DamageEditor";
 import { updateDetections } from "@/lib/reports";
 import { toast } from "sonner";
@@ -40,6 +43,8 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [editing, setEditing] = useState(false);
   const [savingEdit, setSavingEdit] = useState(false);
+  const [claimOpen, setClaimOpen] = useState(false);
+  const [pdfBusy, setPdfBusy] = useState(false);
   const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
   useEffect(() => {
     if (!imageUrl) return;
@@ -96,7 +101,7 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
         image_width?: number | null;
         image_height?: number | null;
         damage_detections: DetectionRow[];
-        vehicles: { nickname: string; brand: string; model: string } | null;
+        vehicles: { nickname: string; brand: string; model: string; year?: number | null; registration_number?: string | null } | null;
       }
     | null;
 
@@ -154,6 +159,30 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
     if (outcome === "shared") toast.success("Report shared.");
     else if (outcome === "copied") toast.success("Report summary copied.");
     else if (outcome === "unsupported") toast.error("Sharing is not available on this device.");
+  }
+
+  async function handlePdf() {
+    if (!data) return;
+    setPdfBusy(true);
+    try {
+      await downloadReportPdf({
+        reportId: data.id,
+        createdAt: data.created_at,
+        source: data.source,
+        summary: data.summary ?? null,
+        vehicle: data.vehicles,
+        imageUrl,
+        imageWidth: data.image_width || natural?.w || 0,
+        imageHeight: data.image_height || natural?.h || 0,
+        detections,
+        estimate,
+      });
+      toast.success("PDF report downloaded.");
+    } catch {
+      toast.error("The PDF could not be created.");
+    } finally {
+      setPdfBusy(false);
+    }
   }
 
   async function saveEdits(next: DamageDetection[]) {
@@ -232,12 +261,30 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
           </p>
         ) : null}
         {data.summary && !editing ? (
-          <p className="mt-3 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm">{data.summary}</p>
+          <p className="mt-3 rounded-2xl border border-primary/25 bg-primary/5 px-4 py-3 text-sm leading-relaxed">{data.summary}</p>
+        ) : null}
+        {!editing && detections.length > 0 ? (
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+            {(["minor", "moderate", "severe"] as const).map((sev) => (
+              <span key={sev} className="inline-flex items-center gap-1.5">
+                <span className="size-2.5 rounded-sm" style={{ background: SEVERITY_COLOR[sev] }} /> {severityLabel(sev)}
+              </span>
+            ))}
+            <span className="ml-auto">Drag the photo to compare</span>
+          </div>
         ) : null}
         {imageUrl && !editing ? (
-          <Button variant="outline" className="mt-3 min-h-11 w-full" onClick={() => setEditing(true)}>
-            <PencilRuler className="size-4" aria-hidden /> Edit damage
-          </Button>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            <Button variant="outline" className="min-h-14 flex-col gap-1 text-xs" onClick={() => setEditing(true)}>
+              <PencilRuler className="size-4" aria-hidden /> Edit damage
+            </Button>
+            <Button variant="outline" className="min-h-14 flex-col gap-1 text-xs" onClick={handlePdf} disabled={pdfBusy}>
+              {pdfBusy ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <FileDown className="size-4" aria-hidden />} PDF report
+            </Button>
+            <Button variant="outline" className="min-h-14 flex-col gap-1 text-xs" onClick={() => setClaimOpen(true)} disabled={detections.length === 0}>
+              <FileCheck2 className="size-4" aria-hidden /> Insurance claim
+            </Button>
+          </div>
         ) : null}
       </div>
 
@@ -252,6 +299,7 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
             {detections.map((detection, index) => (
               <li key={detection.id}>
                 <DamageCard
+                  index={index}
                   detection={detection}
                   active={activeIndex === index}
                   onFocus={() => setActiveIndex(activeIndex === index ? null : index)}
@@ -297,6 +345,16 @@ export function ReportDetail({ reportId, backTo }: { reportId: string; backTo: s
           </p>
         </div>
       </Section>
+
+      <ClaimHelper
+        open={claimOpen}
+        onOpenChange={setClaimOpen}
+        reportId={data.id}
+        createdAt={data.created_at}
+        vehicle={data.vehicles}
+        detections={detections}
+        estimate={estimate}
+      />
     </AppScreen>
   );
 }

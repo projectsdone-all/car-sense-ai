@@ -60,7 +60,7 @@ function HistoryScreen() {
                 <Link
                   to="/history/$reportId"
                   params={{ reportId: report.id }}
-                  className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 shadow-card"
+                  className="flex items-center gap-3 rounded-2xl border border-border bg-surface backdrop-blur-xl px-4 py-3 shadow-card"
                 >
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-semibold">

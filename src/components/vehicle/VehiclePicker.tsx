@@ -27,7 +27,7 @@ export function VehiclePicker({
     return (
       <Link
         to="/vehicles"
-        className="flex min-h-11 items-center gap-2 rounded-lg border border-dashed border-border bg-surface px-3 text-sm font-medium"
+        className="flex min-h-11 items-center gap-2 rounded-lg border border-dashed border-border bg-surface backdrop-blur-xl px-3 text-sm font-medium"
       >
         <Plus className="size-4 text-primary" aria-hidden />
         Add your vehicle
@@ -38,7 +38,7 @@ export function VehiclePicker({
   return (
     <div className="flex items-center gap-2">
       <Select value={selectedId ?? ""} onValueChange={onSelect}>
-        <SelectTrigger className="min-h-11 flex-1 bg-surface" aria-label="Current vehicle">
+        <SelectTrigger className="min-h-11 flex-1 bg-surface backdrop-blur-xl" aria-label="Current vehicle">
           <span className="flex items-center gap-2">
             <Car className="size-4 text-muted-foreground" aria-hidden />
             <SelectValue placeholder="Select vehicle" />
@@ -55,7 +55,7 @@ export function VehiclePicker({
       <Link
         to="/vehicles"
         aria-label="Manage vehicles"
-        className="inline-flex size-11 items-center justify-center rounded-lg border border-border bg-surface text-muted-foreground"
+        className="inline-flex size-11 items-center justify-center rounded-lg border border-border bg-surface backdrop-blur-xl text-muted-foreground"
       >
         <Plus className="size-4" aria-hidden />
       </Link>

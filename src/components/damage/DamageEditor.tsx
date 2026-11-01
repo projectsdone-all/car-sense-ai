@@ -148,7 +148,7 @@ export function DamageEditor({ src, width, height, initial, saving, saveLabel = 
                 type="button"
                 onClick={() => setSelected(i)}
                 className={`flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-sm ${
-                  selected === i ? "border-primary bg-surface" : "border-border bg-surface"
+                  selected === i ? "border-primary bg-surface backdrop-blur-xl" : "border-border bg-surface"
                 }`}
               >
                 <span>
@@ -162,7 +162,7 @@ export function DamageEditor({ src, width, height, initial, saving, saveLabel = 
       )}
 
       {cur && selected !== null ? (
-        <div className="space-y-3 rounded-xl border border-primary/40 bg-surface p-3" data-testid="damage-form">
+        <div className="space-y-3 rounded-2xl border border-primary/40 bg-surface backdrop-blur-xl p-3" data-testid="damage-form">
           <div className="flex items-center justify-between">
             <p className="text-sm font-semibold">Damage {selected + 1}</p>
             <button type="button" onClick={() => remove(selected)} className="flex items-center gap-1 text-xs text-destructive">

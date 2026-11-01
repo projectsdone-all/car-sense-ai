@@ -112,7 +112,7 @@ function MechanicsScreen() {
             className={`min-h-9 shrink-0 rounded-full border px-3 text-xs font-medium ${
               filter === option.value
                 ? "border-primary bg-accent text-accent-foreground"
-                : "border-border bg-surface text-muted-foreground"
+                : "border-border bg-surface backdrop-blur-xl text-muted-foreground"
             }`}
           >
             {option.label}

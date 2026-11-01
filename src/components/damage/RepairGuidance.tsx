@@ -19,7 +19,7 @@ export function RepairGuidance({
 
   if (matched.length === 0) {
     return (
-      <p className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-muted-foreground shadow-card">
+      <p className="rounded-2xl border border-border bg-surface backdrop-blur-xl px-4 py-3 text-sm text-muted-foreground shadow-card">
         Professional inspection recommended before your next long drive.
       </p>
     );
@@ -28,7 +28,7 @@ export function RepairGuidance({
   return (
     <div className="space-y-3">
       {matched.map((guide) => (
-        <article key={guide.id} className="rounded-xl border border-border bg-surface p-4 shadow-card">
+        <article key={guide.id} className="rounded-2xl border border-border bg-surface backdrop-blur-xl p-4 shadow-card">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
             {damageLabel(guide.damage_type)} · {severityLabel(guide.severity)}
           </p>

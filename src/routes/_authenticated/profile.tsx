@@ -63,7 +63,7 @@ function ProfileScreen() {
         {profile.isLoading ? (
           <SkeletonList rows={1} />
         ) : (
-          <div className="rounded-xl border border-border bg-surface p-4 shadow-card">
+          <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl p-4 shadow-card">
             <p className="text-base font-semibold">
               {profile.data?.full_name ?? "Car Sense AI driver"}
             </p>
@@ -85,7 +85,7 @@ function ProfileScreen() {
       </Section>
 
       <Section title="Shortcuts">
-        <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface shadow-card">
+        <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface backdrop-blur-xl shadow-card">
           <li>
             <Link to="/vehicles" className="flex items-center gap-3 px-4 py-3.5">
               <Car className="size-4 text-muted-foreground" aria-hidden />
@@ -104,7 +104,7 @@ function ProfileScreen() {
       </Section>
 
       <Section title="Detection engine">
-        <div className="rounded-xl border border-border bg-surface px-4 py-3 shadow-card">
+        <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl px-4 py-3 shadow-card">
           <div className="flex gap-3">
             <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
             <div>

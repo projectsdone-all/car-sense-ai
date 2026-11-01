@@ -132,7 +132,7 @@ function VehiclesScreen() {
 
       <Section title="Add a vehicle">
         <form
-          className="space-y-3 rounded-xl border border-border bg-surface p-4 shadow-card"
+          className="space-y-3 rounded-2xl border border-border bg-surface backdrop-blur-xl p-4 shadow-card"
           onSubmit={(event) => {
             event.preventDefault();
             create.mutate();

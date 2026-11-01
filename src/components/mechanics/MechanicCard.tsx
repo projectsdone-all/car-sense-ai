@@ -12,7 +12,7 @@ export function MechanicCard({
   distanceKm?: number;
 }) {
   return (
-    <article className="rounded-xl border border-border bg-surface p-4 shadow-card">
+    <article className="rounded-2xl border border-border bg-surface backdrop-blur-xl p-4 shadow-card">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="truncate text-sm font-semibold">{mechanic.name}</h3>

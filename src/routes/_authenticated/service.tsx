@@ -116,7 +116,7 @@ function ServiceScreen() {
       <PageHeader title="Service" description="Reminders and health tips" backTo="/" />
 
       <Section title="Add reminder">
-        <div className="space-y-3 rounded-xl border border-border bg-surface p-4 shadow-card">
+        <div className="space-y-3 rounded-2xl border border-border bg-surface backdrop-blur-xl p-4 shadow-card">
           <div className="space-y-1.5">
             <Label htmlFor="service-type">Service</Label>
             <Select value={serviceType} onValueChange={setServiceType}>
@@ -201,7 +201,7 @@ function ServiceScreen() {
         {tips.isLoading ? (
           <SkeletonList rows={2} />
         ) : (
-          <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface shadow-card">
+          <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface backdrop-blur-xl shadow-card">
             {(tips.data ?? []).map((item) => (
               <li key={item.id} className="flex gap-3 px-4 py-3">
                 <Lightbulb className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />

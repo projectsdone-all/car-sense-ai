@@ -13,7 +13,7 @@ export function ServiceReminderCard({
   onDelete?: () => void;
 }) {
   return (
-    <article className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 shadow-card">
+    <article className="flex items-center gap-3 rounded-2xl border border-border bg-surface backdrop-blur-xl px-4 py-3 shadow-card">
       <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
         <CalendarClock className="size-5" aria-hidden />
       </span>

@@ -30,7 +30,7 @@ export async function fetchReports(limit?: number): Promise<DamageReport[]> {
 export async function fetchReport(id: string) {
   const { data, error } = await db
     .from("damage_reports")
-    .select("*, damage_detections(*), vehicles(nickname, brand, model)")
+    .select("*, damage_detections(*), vehicles(nickname, brand, model, year, registration_number)")
     .eq("id", id)
     .maybeSingle();
   if (error) throw error;

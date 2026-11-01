@@ -104,7 +104,7 @@ function ParkingScreen() {
 
       <Section title="Current location">
         {coords ? (
-          <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-card">
+          <div className="overflow-hidden rounded-2xl border border-border bg-surface backdrop-blur-xl shadow-card">
             {mapImage ? (
               <img src={mapImage} alt="Map of your current location" className="block w-full" />
             ) : (
@@ -129,7 +129,7 @@ function ParkingScreen() {
       </Section>
 
       <Section title="Save this spot">
-        <div className="space-y-3 rounded-xl border border-border bg-surface p-4 shadow-card">
+        <div className="space-y-3 rounded-2xl border border-border bg-surface backdrop-blur-xl p-4 shadow-card">
           <div className="space-y-1.5">
             <Label htmlFor="spot-name">Name</Label>
             <Input
@@ -175,7 +175,7 @@ function ParkingScreen() {
             {(spots.data ?? []).map((spot) => (
               <li
                 key={spot.id}
-                className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 shadow-card"
+                className="flex items-center gap-3 rounded-2xl border border-border bg-surface backdrop-blur-xl px-4 py-3 shadow-card"
               >
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">{spot.name}</p>

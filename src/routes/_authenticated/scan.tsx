@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Camera, ImageUp, Loader2, PencilRuler, RotateCcw } from "lucide-react";
+import { Camera, ImageUp, Loader2, PencilRuler, RotateCcw, ScanLine, Sparkles, Sun, Maximize } from "lucide-react";
 import { toast } from "sonner";
 import { AppScreen, Section } from "@/components/layout/AppScreen";
 import { PageHeader } from "@/components/navigation/PageHeader";
@@ -125,7 +125,7 @@ function ScanScreen() {
       <PageHeader title="Scan Vehicle" description={mode.data ? MODE_LABEL[mode.data] : "Checking AI…"} backTo="/" />
 
       {mode.data === "demo" ? (
-        <p className="mx-4 mt-4 rounded-lg border border-border bg-muted px-3 py-2 text-xs text-muted-foreground">
+        <p className="mx-4 mt-4 rounded-2xl border border-[oklch(0.84_0.14_85/0.3)] bg-[oklch(0.84_0.14_85/0.08)] px-3.5 py-2.5 text-xs text-muted-foreground">
           AI detection is not connected, so you mark the damage yourself and the app prices the repair. For automatic
           detection, add a free Gemini API key on the{" "}
           <Link to="/profile" className="font-medium text-primary underline">Profile</Link> screen (or set
@@ -143,7 +143,7 @@ function ScanScreen() {
 
         {review && photo ? (
           <>
-            {review.summary ? <p className="mb-3 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm">{review.summary}</p> : null}
+            {review.summary ? <p className="mb-3 rounded-lg border border-border bg-surface backdrop-blur-xl px-3 py-2.5 text-sm">{review.summary}</p> : null}
             <DamageEditor
               src={photo.url}
               width={photo.width}
@@ -156,18 +156,59 @@ function ScanScreen() {
             />
           </>
         ) : photo ? (
-          <figure className="overflow-hidden rounded-xl border border-border bg-muted">
-            <img src={photo.url} alt="Selected vehicle photo" className="block w-full" />
+          <figure className="hud-corners relative overflow-hidden rounded-3xl border border-primary/30 bg-muted shadow-[var(--shadow-raised)]">
+            <img src={photo.url} alt="Selected vehicle photo" className={"block w-full transition-all duration-500 " + (busy ? "scale-[1.02] brightness-75 saturate-50" : "")} />
+            {busy ? (
+              <div className="pointer-events-none absolute inset-0">
+                <div className="absolute inset-0 bg-[linear-gradient(oklch(0.83_0.145_200/0.12)_1px,transparent_1px),linear-gradient(90deg,oklch(0.83_0.145_200/0.12)_1px,transparent_1px)] bg-[size:28px_28px]" />
+                <div className="absolute inset-x-0 h-24 -translate-y-full animate-scan-vert bg-gradient-to-b from-transparent to-primary/40">
+                  <div className="absolute inset-x-0 bottom-0 h-[2px] bg-primary shadow-[0_0_20px_4px_var(--primary)]" />
+                </div>
+                <div className="absolute inset-x-0 bottom-4 flex justify-center">
+                  <span className="glass font-display inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-primary">
+                    <Loader2 className="size-4 animate-spin" aria-hidden /> {busy}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <span className="glass absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold text-primary">
+                <span className="size-1.5 rounded-full bg-primary shadow-[0_0_8px_var(--primary)]" /> Photo ready
+              </span>
+            )}
           </figure>
         ) : (
-          <div className="grid gap-2">
-            <Button type="button" className="min-h-12 w-full text-base" onClick={() => cameraInput.current?.click()} disabled={busy !== null}>
-              <Camera className="size-5" aria-hidden /> Take Photo
-            </Button>
+          <div className="space-y-3">
+            <button
+              type="button"
+              onClick={() => cameraInput.current?.click()}
+              disabled={busy !== null}
+              className="hud-corners group relative flex aspect-[4/3] w-full flex-col items-center justify-center overflow-hidden rounded-3xl border border-dashed border-primary/35 bg-[radial-gradient(ellipse_at_center,oklch(0.83_0.145_200/0.12),transparent_70%)] text-center transition-colors hover:border-primary/70 disabled:opacity-60"
+            >
+              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(oklch(1_0_0/0.04)_1px,transparent_1px),linear-gradient(90deg,oklch(1_0_0/0.04)_1px,transparent_1px)] bg-[size:32px_32px]" />
+              <div className="pointer-events-none absolute inset-x-6 h-16 animate-scan-vert bg-gradient-to-b from-transparent to-primary/20">
+                <div className="absolute inset-x-0 bottom-0 h-px bg-primary/80 shadow-[0_0_14px_2px_var(--primary)]" />
+              </div>
+              <span className="bg-brand relative flex size-20 items-center justify-center rounded-3xl text-primary-foreground shadow-[var(--shadow-glow)] transition-transform group-hover:scale-105">
+                {busy ? <Loader2 className="size-9 animate-spin" aria-hidden /> : <Camera className="size-9" aria-hidden />}
+              </span>
+              <span className="font-display relative mt-4 text-xl font-bold">{busy ?? "Tap to take a photo"}</span>
+              <span className="relative mt-1 text-sm text-muted-foreground">Point at the damaged panel</span>
+            </button>
             <Button type="button" variant="outline" className="min-h-12 w-full text-base" onClick={() => uploadInput.current?.click()} disabled={busy !== null}>
-              <ImageUp className="size-5" aria-hidden /> Upload Photo
+              <ImageUp className="size-5" aria-hidden /> Upload from gallery
             </Button>
-            <p className="pt-1 text-xs text-muted-foreground">Tip: stand 1–2 m away in good light so the whole damaged area is in the photo.</p>
+            <ul className="grid grid-cols-3 gap-2 pt-1">
+              {[
+                { icon: Maximize, text: "Stand 1–2 m away" },
+                { icon: Sun, text: "Use good light" },
+                { icon: ScanLine, text: "Fill the frame" },
+              ].map(({ icon: Icon, text }) => (
+                <li key={text} className="flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-surface px-2 py-3 text-center text-[11px] text-muted-foreground backdrop-blur-xl">
+                  <Icon className="size-4 text-primary" aria-hidden />
+                  {text}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </Section>
@@ -179,7 +220,7 @@ function ScanScreen() {
       ) : null}
 
       {photo && !review ? (
-        <div className="sticky bottom-20 z-20 border-t border-border bg-background/95 px-4 py-3 backdrop-blur" style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}>
+        <div className="sticky bottom-24 z-20 mx-3 rounded-3xl glass px-3 py-3 shadow-[var(--shadow-raised)]">
           {busy ? (
             <div className="flex items-center gap-2 py-2 text-sm text-muted-foreground">
               <Loader2 className="size-4 animate-spin" aria-hidden />
@@ -191,7 +232,7 @@ function ScanScreen() {
                 <RotateCcw className="size-4" aria-hidden /> Retake
               </Button>
               {hasAi ? (
-                <Button type="button" className="min-h-12 flex-[1.4] text-base" onClick={analyse}>Analyze Damage</Button>
+                <Button type="button" className="min-h-12 flex-[1.4] text-base" onClick={analyse}><Sparkles className="size-4" aria-hidden /> Analyze Damage</Button>
               ) : (
                 <Button type="button" className="min-h-12 flex-[1.4] text-base" onClick={() => setReview({ detections: [], source: "manual" })} disabled={mode.isLoading}>
                   <PencilRuler className="size-4" aria-hidden /> Mark Damage

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Loader2, ScanLine } from "lucide-react";
+import { BrainCircuit, IndianRupee, Loader2, MapPinned, ScanLine, Sparkles } from "lucide-react";
+import { CarScan } from "@/components/common/CarScan";
+import { Showcase } from "@/components/layout/Showcase";
 import { toast } from "sonner";
 import { db, DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/db";
 import { Button } from "@/components/ui/button";
@@ -57,30 +59,55 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   }
 
   return (
-    <div className="min-h-screen bg-background px-5 py-12">
-      <div className="app-shell">
-        <div className="flex items-center gap-2">
-          <span className="flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+    <div className="min-h-screen px-5 pb-12 pt-8">
+      <Showcase />
+      <div className="app-shell relative animate-rise">
+        <div className="flex items-center gap-2.5">
+          <span className="bg-brand flex size-10 items-center justify-center rounded-xl text-primary-foreground shadow-[var(--shadow-glow)]">
             <ScanLine className="size-5" aria-hidden />
           </span>
-          <div>
-            <p className="text-base font-semibold">Car Sense AI</p>
-            <p className="text-xs text-muted-foreground">
-              See the damage. Know the cost. Drive with confidence.
-            </p>
+          <span className="leading-tight">
+            <span className="font-display block text-base font-bold tracking-tight">Car Sense AI</span>
+            <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Damage intelligence</span>
+          </span>
+        </div>
+
+        <div className="hud-corners relative mt-6 overflow-hidden rounded-3xl border border-primary/25 bg-[linear-gradient(160deg,oklch(0.27_0.06_230/0.8),oklch(0.17_0.03_258/0.85))] px-4 pb-4 pt-6">
+          <div className="pointer-events-none absolute -left-10 -top-16 size-48 rounded-full bg-primary/25 blur-3xl" />
+          <CarScan />
+          <div className="relative mt-2 flex flex-wrap justify-center gap-1.5">
+            {[
+              { icon: BrainCircuit, label: "AI detection" },
+              { icon: IndianRupee, label: "INR estimates" },
+              { icon: MapPinned, label: "Help nearby" },
+            ].map(({ icon: Icon, label }) => (
+              <span key={label} className="inline-flex items-center gap-1 rounded-full border border-border bg-background/60 px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+                <Icon className="size-3.5 text-primary" aria-hidden /> {label}
+              </span>
+            ))}
           </div>
         </div>
 
-        <h1 className="mt-10 text-2xl font-semibold tracking-tight">
-          {mode === "login" ? "Sign in" : "Create your account"}
+        <h1 className="mt-8 text-[2rem] font-bold leading-[1.1]">
+          {mode === "login" ? (
+            <>
+              See the damage.
+              <br />
+              <span className="text-gradient">Know the cost.</span>
+            </>
+          ) : (
+            <>
+              Create your <span className="text-gradient">account</span>
+            </>
+          )}
         </h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-muted-foreground">
           {mode === "login"
             ? "The demo account is filled in — just press Sign in, or use your own account."
             : "Add your vehicle and run your first damage inspection in under a minute."}
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+        <form onSubmit={handleSubmit} className="glass mt-6 space-y-4 rounded-3xl p-5">
           {mode === "signup" ? (
             <div className="space-y-1.5">
               <Label htmlFor="full-name">Full name</Label>
@@ -103,7 +130,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
               required
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="min-h-11"
+              className="min-h-12"
             />
           </div>
           <div className="space-y-1.5">
@@ -116,7 +143,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
               minLength={6}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="min-h-11"
+              className="min-h-12"
             />
           </div>
 
@@ -126,8 +153,8 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
             </p>
           ) : null}
 
-          <Button type="submit" disabled={loading} className="min-h-12 w-full text-base">
-            {loading ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+          <Button type="submit" disabled={loading} className="min-h-13 w-full text-base">
+            {loading ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Sparkles className="size-4" aria-hidden />}
             {mode === "login" ? "Sign in" : "Create account"}
           </Button>
         </form>

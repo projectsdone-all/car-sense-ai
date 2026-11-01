@@ -86,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#1c1b19" },
+      { name: "theme-color", content: "#0d1220" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-title", content: "Car Sense" },
       {
@@ -108,7 +108,7 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <HeadContent />
       <Outlet />
-      <Toaster position="top-center" richColors />
+      <Toaster position="top-center" theme="dark" richColors />
     </QueryClientProvider>
   );
 }

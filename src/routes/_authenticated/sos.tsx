@@ -116,22 +116,25 @@ function SosScreen() {
       <PageHeader title="SOS Emergency" description="Roadside assistance" backTo="/" />
 
       <Section>
-        <div className="rounded-xl border border-border bg-surface p-5 text-center shadow-card">
-          <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-severe text-severe-foreground">
-            <Siren className="size-7" aria-hidden />
-          </span>
-          <h2 className="mt-4 text-lg font-semibold">Need help right now?</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Car Sense AI will read your current location so you can send it to someone you trust.
-          </p>
-          <Button
-            className="mt-5 min-h-12 w-full text-base"
+        <div className="relative overflow-hidden rounded-3xl border border-[oklch(0.64_0.21_25/0.3)] bg-[radial-gradient(ellipse_at_top,oklch(0.64_0.21_25/0.22),transparent_70%)] px-5 pb-6 pt-8 text-center">
+          <button
+            type="button"
             onClick={() => setConfirmOpen(true)}
             disabled={loading}
+            aria-label="Send SOS"
+            className="group relative mx-auto flex size-44 items-center justify-center rounded-full disabled:opacity-60"
           >
-            {loading ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
-            SOS
-          </Button>
+            <span className="absolute inset-0 animate-ping-soft rounded-full bg-[oklch(0.64_0.21_25/0.35)]" />
+            <span className="absolute inset-3 animate-ping-soft rounded-full bg-[oklch(0.64_0.21_25/0.3)] [animation-delay:0.7s]" />
+            <span className="relative flex size-36 flex-col items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,oklch(0.72_0.21_28),oklch(0.5_0.2_25))] text-white shadow-[0_0_0_6px_oklch(0.64_0.21_25/0.25),0_20px_60px_-10px_oklch(0.64_0.21_25/0.9)] transition-transform group-hover:scale-105 group-active:scale-95">
+              {loading ? <Loader2 className="size-9 animate-spin" aria-hidden /> : <Siren className="size-9" aria-hidden />}
+              <span className="font-display mt-1 text-3xl font-bold tracking-widest">SOS</span>
+            </span>
+          </button>
+          <h2 className="mt-6 text-xl font-semibold">Need help right now?</h2>
+          <p className="mx-auto mt-1 max-w-xs text-sm text-muted-foreground">
+            Tap SOS — Car Sense AI reads your current location so you can send it to someone you trust.
+          </p>
         </div>
       </Section>
 
@@ -144,7 +147,7 @@ function SosScreen() {
       {coords ? (
         <>
           <Section title="Your location">
-            <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-card">
+            <div className="overflow-hidden rounded-2xl border border-border bg-surface backdrop-blur-xl shadow-card">
               <MapPreview coords={coords} height={180} />
               <div className="px-4 py-3">
               <p className="flex items-center gap-2 text-sm font-medium tabular-nums">
