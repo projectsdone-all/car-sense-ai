@@ -82,7 +82,7 @@ git push
 | Name | Value | Required |
 |---|---|---|
 | `GEMINI_API_KEY` | your key from https://aistudio.google.com/apikey | Recommended — real AI scans for every visitor |
-| `GEMINI_MODEL` | `gemini-2.5-flash` (default) | Optional |
+| `GEMINI_MODEL` | `gemini-3.8-flash` (default) | Optional |
 | `VITE_AI_API_URL` | URL of your own YOLOv8 service | Optional |
 
 5. Click **Deploy**

@@ -12,7 +12,7 @@ import { compressImage } from "@/lib/image";
  */
 const API_URL = import.meta.env["VITE_AI_API_URL"] as string | undefined;
 const KEY_STORE = "carsense.geminiKey";
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-3.8-flash";
 
 export type InferenceMode = "yolo" | "server" | "browser-key" | "demo";
 
