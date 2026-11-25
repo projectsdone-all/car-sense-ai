@@ -27,20 +27,34 @@ export default async function handler(req, res) {
   const { image, mimeType = "image/jpeg" } = req.body || {};
   if (!image || typeof image !== "string") return res.status(400).json({ error: "No image received." });
   if (image.length > 5_500_000) return res.status(413).json({ error: "Photo is too large." });
-  const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+  // Try the main model, then a lighter backup. Retry once on "high demand" / rate-limit errors.
+  const models = [...new Set([process.env.GEMINI_MODEL || "gemini-3.8-flash", "gemini-3.5-flash-lite"])];
+  const body = JSON.stringify({
+    contents: [{ role: "user", parts: [{ inline_data: { mime_type: mimeType, data: image } }, { text: PROMPT }] }],
+    generationConfig: { temperature: 0.1, responseMimeType: "application/json" },
+  });
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  let lastError = "AI service error";
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ inline_data: { mime_type: mimeType, data: image } }, { text: PROMPT }] }],
-        generationConfig: { temperature: 0.1, responseMimeType: "application/json" },
-      }),
-    });
-    const d = await r.json();
-    if (!r.ok) return res.status(502).json({ error: d?.error?.message || "AI service error" });
-    const text = (d.candidates?.[0]?.content?.parts || []).map((p) => p.text || "").join("");
-    return res.status(200).json(JSON.parse(text));
+    for (const model of models) {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+          body,
+        });
+        const d = await r.json().catch(() => ({}));
+        if (r.ok) {
+          const text = (d.candidates?.[0]?.content?.parts || []).map((p) => p.text || "").join("");
+          return res.status(200).json(JSON.parse(text));
+        }
+        lastError = d?.error?.message || `AI service responded with ${r.status}`;
+        const busy = r.status === 429 || r.status === 500 || r.status === 503;
+        if (!busy) break; // e.g. model not available → go straight to the backup model
+        if (attempt === 0) await sleep(1500);
+      }
+    }
+    return res.status(502).json({ error: "The AI is busy right now. Please tap Try again in a minute. (" + lastError + ")" });
   } catch (e) {
     return res.status(500).json({ error: "Damage analysis failed: " + (e?.message || e) });
   }

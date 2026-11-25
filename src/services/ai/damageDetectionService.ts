@@ -12,7 +12,7 @@ import { compressImage } from "@/lib/image";
  */
 const API_URL = import.meta.env["VITE_AI_API_URL"] as string | undefined;
 const KEY_STORE = "carsense.geminiKey";
-const MODEL = "gemini-3.8-flash";
+const MODELS = ["gemini-3.8-flash", "gemini-3.5-flash-lite"];
 
 export type InferenceMode = "yolo" | "server" | "browser-key" | "demo";
 
@@ -96,18 +96,31 @@ async function toBase64(blob: Blob): Promise<string> {
 }
 
 async function geminiDirect(image: string, mimeType: string, key: string): Promise<GeminiPayload> {
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-    body: JSON.stringify({
-      contents: [{ role: "user", parts: [{ inline_data: { mime_type: mimeType, data: image } }, { text: GEMINI_PROMPT }] }],
-      generationConfig: { temperature: 0.1, responseMimeType: "application/json" },
-    }),
+  // Try the main model, then a lighter backup. Retry once on "high demand" / rate-limit errors.
+  const body = JSON.stringify({
+    contents: [{ role: "user", parts: [{ inline_data: { mime_type: mimeType, data: image } }, { text: GEMINI_PROMPT }] }],
+    generationConfig: { temperature: 0.1, responseMimeType: "application/json" },
   });
-  const d = await r.json().catch(() => ({}));
-  if (!r.ok) throw new DamageDetectionError(d?.error?.message ?? `AI service responded with ${r.status}`);
-  const text = ((d.candidates?.[0]?.content?.parts ?? []) as { text?: string }[]).map((p) => p.text ?? "").join("");
-  return JSON.parse(text) as GeminiPayload;
+  let lastError = "AI service error";
+  for (const model of MODELS) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+        body,
+      });
+      const d = await r.json().catch(() => ({}));
+      if (r.ok) {
+        const text = ((d.candidates?.[0]?.content?.parts ?? []) as { text?: string }[]).map((p) => p.text ?? "").join("");
+        return JSON.parse(text) as GeminiPayload;
+      }
+      lastError = d?.error?.message ?? `AI service responded with ${r.status}`;
+      const busy = r.status === 429 || r.status === 500 || r.status === 503;
+      if (!busy) break;
+      if (attempt === 0) await new Promise((res) => setTimeout(res, 1500));
+    }
+  }
+  throw new DamageDetectionError("The AI is busy right now. Please tap Try again in a minute. (" + lastError + ")");
 }
 
 async function geminiServer(image: string, mimeType: string): Promise<GeminiPayload> {
